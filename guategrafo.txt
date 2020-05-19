@@ -1,0 +1,11 @@
+Guatemala Zacapa 150
+Mazatenango PuertoBarrios 100
+Guatemala Retalhuleu 200
+Guatemala Peten 500
+Guatemala Coban 150
+Coban PuertoBarrios 100
+Guatemala Salama 30
+Salama Aurora 10
+Aurora Coban 10
+Salama Coban 30
+Siquinala Guatemala 200
