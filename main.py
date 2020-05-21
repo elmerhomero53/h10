@@ -16,13 +16,15 @@ def pedir():
 
 def menu1():
     n = 0
+    global M
     while n<4:
-        print("Gracias por usar nuestro programa")
+        print("\n \n Gracias por usar nuestro programa")
         print("Desea:")
         print("1. Calcular la ruta mas corta")
         print("2. Modificar el grafo")
         print("3. Calcular el centro del grafo")
-        print("4. Salir")
+        print("4. El algoritmo de Djikstra")
+        print("5. Salir")
         n = int(input("Ingrese el numero de la opcion que quiere por favor"))
         if n == 1:
             o,d = pedir()
@@ -31,18 +33,23 @@ def menu1():
             print("Desea:")
             print("1. Agregar nodos")
             print("2. Agregar aristas")
-            print("3. Ambos")
-            m = input("Ingrese el numero de la opcion:")
+            print("3. Modificar el costo de una ruta")
+            m = int(input("Ingrese el numero de la opcion:"))
             if m==1:
                 modificar(True,False)
+                M = nx.to_numpy_matrix(G)
             elif m==2:
                 modificar(False,True)
+                M = nx.to_numpy_matrix(G)
             else:
-                modificar(True,True)
+                modificar(False,False)
+                M = nx.to_numpy_matrix(G)
         elif n==3:
             m = center()
             ciudades = list(G.nodes)
             print("El centro del grafo es: ",ciudades[m])
+        elif n==4:
+            djisktra()
         else:
             print("Gracias por usar el programa")
     
@@ -60,9 +67,14 @@ def modificar(agregarN,agregarC):
         G.add_node(c)
     elif agregarC:
         c1 = input("Donde comienza su nueva ruta?")
-        c2 = input("Donde comienza su nueva ruta?")
+        c2 = input("Donde termina su nueva ruta?")
         w = input("Cual es el costo de esta ruta?")
-        G.add_edge(c1,c2,weight=w)        
+        G.add_edge(c1,c2,weight=w)
+    else:
+        c1 = input("Donde comienza la ruta?")
+        c2 = input("Donde termina la ruta?")
+        w = int(input("Cual es el nuevo costo de esta ruta?"))
+        G[c1][c2]['weight']=w     
     
 def center():
     T = M.T
@@ -74,6 +86,8 @@ def center():
 
 def floyd():
     global M
+    M = nx.to_numpy_matrix(G)
+    global c
     M = M.A
     P = zeros(shape(M))
     for i in range(shape(M)[0]):
@@ -91,7 +105,7 @@ def floyd():
     return P
 
 def findPath(s,t):
-    global P
+    P = floyd()
     global G
     path = []
     ciudades = list(G.nodes)
@@ -102,19 +116,23 @@ def findPath(s,t):
     while n != 0:
         path.append(P[n-1][t])
         n = int(path[-1])
-    print("El camino mas corto es: ")
-    print(ciudades[s])
-    for x in path:
-        if x!=0:
-            print(ciudades[int(x-1)])
-        else:
-            print(ciudades[t])
-            break
-            
+    if M[s][t]==inf:
+        print("\n El costo del camino mas corto es: ",M[s][t])
+        print("No existe camino desde ",ciudades[s], " hacia ", ciudades[t])
+    else:
+        print("\n El costo del camino mas corto es: ",M[s][t])
+        print("El camino mas corto es: ")
+        print(ciudades[s])
+        for x in path:
+            if x!=0:
+                print(ciudades[int(x-1)])
+            else:
+                print(ciudades[t])
+                break
+
 G = nx.DiGraph()
 
+
 jalarinfo()
-M = nx.to_numpy_matrix(G)
-P = floyd()
 
 menu1()
