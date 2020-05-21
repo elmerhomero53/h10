@@ -5,10 +5,39 @@ Created on Mon May 18 21:36:50 2020
 @author: jose ramos
 """
 
+"""
+Se uso como referencia el algoritmo de floyd warshall de la siguiente
+pagina:
+    
+https://www.geeksforgeeks.org/floyd-warshall-algorithm-dp-16/
+
+se baso en el algoritmo de djikstra de 
+https://brilliant.org/wiki/dijkstras-short-path-finder/
+para esta hoja
+"""
 
 import networkx as nx
 from numpy import zeros, shape, inf
 
+def dijk(origen, destino):
+    W = list(G.nodes)
+    dist = {origen: 0}
+    for w in W:
+        if w != origen:
+            dist.update({w: inf })
+    while W != []:
+        sub = {v: dist[v] for v in W}
+        v = min(sub, key = dist.get)
+        W.remove(v)
+        n = list(G.neighbors(v))
+        for i in n:
+            alt = G[v][i]['weight'] + dist[v]
+            if alt < dist[i]:
+                dist[i] = G[v][i]['weight'] + dist[v]
+        if v==destino:
+            print('La ruta mas corta tiene distancia: ',dist[v])
+            break
+        
 def pedir():
     origen = input("Cual es su ciudad origen?\n")
     destino = input("Cual es su ciudad destino?\n")
@@ -47,9 +76,11 @@ def menu1():
         elif n==3:
             m = center()
             ciudades = list(G.nodes)
+            M = nx.to_numpy_matrix(G)
             print("El centro del grafo es: ",ciudades[m])
         elif n==4:
-            djisktra()
+            o,d = pedir()
+            dijk(o,d)
         else:
             print("Gracias por usar el programa")
     
@@ -78,9 +109,11 @@ def modificar(agregarN,agregarC):
     
 def center():
     T = M.T
+    T=T.A
     y = []
     for x in T:
-        x[x== inf] = 0
+        x[x== inf] = -inf
+        x[x == 0 ] = -inf
         y.append(max(x))
     return y.index(min(y))
 
@@ -132,7 +165,7 @@ def findPath(s,t):
 
 G = nx.DiGraph()
 
-
 jalarinfo()
+M = nx.to_numpy_matrix(G)
 
 menu1()
